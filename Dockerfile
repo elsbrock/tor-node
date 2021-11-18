@@ -1,67 +1,38 @@
 # Dockerfile for Tor Relay Server with obfs4proxy (Multi-Stage build)
-FROM golang:buster AS go-build
+FROM golang AS go-build
+
+ENV GOARCH=amd64
 
 # Build /go/bin/obfs4proxy & /go/bin/meek-server
-RUN go get -v git.torproject.org/pluggable-transports/obfs4.git/obfs4proxy \
- && go get -v git.torproject.org/pluggable-transports/meek.git/meek-server \
- && cp -rv /go/bin /usr/local/
+RUN go install -ldflags="-extldflags=-static" -v gitlab.com/yawning/obfs4.git/obfs4proxy@latest \
+ && go install -ldflags="-extldflags=-static" -v git.torproject.org/pluggable-transports/meek.git/meek-server@latest \
+ && cp -v /go/bin/linux_amd64/* /usr/local/bin
 
-FROM debian:buster-slim
-MAINTAINER Christian chriswayg@gmail.com
+FROM amd64/archlinux AS tor
+RUN pacman --noconfirm -Sy tor
 
-ARG GPGKEY=A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89
-ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE="True"
-ARG DEBIAN_FRONTEND=noninteractive
-ARG found=""
+RUN ldd /usr/bin/tor | tr -s '[:blank:]' '\n' | grep '^/' | \
+    xargs -I % sh -xc 'mkdir -p $(dirname deps%); cp % deps%;'
 
-# Set a default Nickname
-ENV TOR_NICKNAME=Tor4
-ENV TOR_USER=tord
-ENV TERM=xterm
+FROM scratch AS stage
 
-# Install prerequisites
-RUN apt-get update \
- && apt-get install --no-install-recommends --no-install-suggests -y \
-        apt-transport-https \
-        ca-certificates \
-        dirmngr \
-        apt-utils \
-        gnupg \
-        curl \
- # Add torproject.org Debian repository for stable Tor version \
- && curl https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --import \
- && gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add - \
- && echo "deb https://deb.torproject.org/torproject.org buster main"   >  /etc/apt/sources.list.d/tor-apt-sources.list \
- && echo "deb-src https://deb.torproject.org/torproject.org buster main" >> /etc/apt/sources.list.d/tor-apt-sources.list \
- # Install tor with GeoIP and obfs4proxy & backup torrc \
- && apt-get update \
- && apt-get install --no-install-recommends --no-install-suggests -y \
-        pwgen \
-        iputils-ping \
-        tor \
-        tor-geoipdb \
-        deb.torproject.org-keyring \
- && mkdir -pv /usr/local/etc/tor/ \
- && mv -v /etc/tor/torrc /usr/local/etc/tor/torrc.sample \
- && apt-get purge --auto-remove -y \
-        apt-transport-https \
-        dirmngr \
-        apt-utils \
-        gnupg \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/* \
- # Rename Debian unprivileged user to tord \
- && usermod -l tord debian-tor \
- && groupmod -n tord debian-tor
+COPY --from=go-build /usr/local/bin/ /usr/bin/
 
-# Copy obfs4proxy & meek-server
-COPY --from=go-build /usr/local/bin/ /usr/local/bin/
+COPY --from=tor /etc/passwd /etc/passwd
+COPY --from=tor /usr/lib/libnss_dns.so.2 /usr/lib
+COPY --from=tor /usr/lib/libresolv.so.2 /usr/lib
+COPY --from=tor /etc/nsswitch.conf /etc/nsswitch.conf
 
-# Copy Tor configuration file
+COPY --from=tor /usr/bin/tor /usr/bin/
+COPY --from=tor /deps /
 COPY ./torrc /etc/tor/torrc
 
 # Copy docker-entrypoint
 COPY ./scripts/ /usr/local/bin/
+
+FROM scratch
+
+COPY --from=stage / /
 
 # Persist data
 VOLUME /etc/tor /var/lib/tor
@@ -69,5 +40,5 @@ VOLUME /etc/tor /var/lib/tor
 # ORPort, DirPort, SocksPort, ObfsproxyPort, MeekPort
 EXPOSE 9001 9030 9050 54444 7002
 
-ENTRYPOINT ["docker-entrypoint"]
 CMD ["tor", "-f", "/etc/tor/torrc"]
+
