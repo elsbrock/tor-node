@@ -1,5 +1,6 @@
 { 
     "enabled": true,
+    "includeForks": true,
     "docker": {
         "pinDigests": true,
         "enabled": true
