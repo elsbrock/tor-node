@@ -1,7 +1,12 @@
-{
-    "docker-compose": {
-      "digest": {
+{ 
+    "enabled": true,
+    "docker": {
+        "pinDigests": true,
         "enabled": true
-      }
+    },
+    "docker-compose": {
+        "digest": {
+            "enabled": true
+        }
     }
-  }
+}
