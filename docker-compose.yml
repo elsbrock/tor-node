@@ -9,7 +9,7 @@ services:
       - tor-data:/var/lib/tor
       - tor-config:/etc/torrc.d
   watchtower:
-    image: containrrr/watchtower
+    image: containrrr/watchtower@sha256:3283e0b5be326d77ff4f4e8b7a91d46aaa1d511c74877b5a32f161548812d00c
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
