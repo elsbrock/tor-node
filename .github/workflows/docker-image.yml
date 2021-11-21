@@ -43,6 +43,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Validate Tor
+        run: docker run --rm ${{ steps.meta.outputs.tags }} --verify-config
+
       - name: Analyze Docker image
         uses: yuichielectric/dive-action@0.0.4
         with:
