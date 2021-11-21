@@ -1,5 +1,5 @@
 ## Tor Relay Server on Docker
-![build](https://github.com/elsbrock/tor-node/actions/workflows/build/badge.svg)
+[![Docker Image CI](https://github.com/elsbrock/tor-node/actions/workflows/docker-image.yml/badge.svg)](https://github.com/elsbrock/tor-node/actions/workflows/docker-image.yml)
 
 #### A complete, efficient and secure Tor relay server Docker image
 *This Docker image will run the latest version of Tor server available on Arch Linux. It will run Tor as an unprivileged regular user, as recommended by torproject.org.*
