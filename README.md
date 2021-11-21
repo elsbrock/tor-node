@@ -8,7 +8,7 @@ The image is distroless, meaning that it is missing a userland (using `FROM scra
 
 Tor and its dependencies are kept up to date with the help of [Renovate](https://docs.renovatebot.com). PRs to update dependencies that pass the build are merged automatically and a new Docker image version is published subsequently.
 
-The Docker image can be automatically updated on the Docker host using e.g. [Watchtower](http://containrrr.dev/watchtower/).
+The Docker image can be automatically updated on the Docker host using [Watchtower](http://containrrr.dev/watchtower/).
 
 #### About Tor
 
@@ -33,14 +33,14 @@ state security.
 Create a directory for your Tor server data and your custom configuration. Then set your own Nickname (only letters and numbers) and an optional contact Email (which will be published on the Tor network):
 
 ```sh
-mkdir -vp tor-data
 docker run -d --init --name=tor-node --net=host --restart=always \
-  -v $PWD/tor-data:/var/lib/tor \
-  -p 9001:9001 -p 9030:9030 \
+  -v tor-data:/var/lib/tor \
   else/tor-node
 ```
 
-This command will run a Tor relay server with a safe default configuration (not as an exit node). The server will autostart after restarting the host system. All Tor data will be preserved in the mounted Data Directory, even if you upgrade or remove the container.
+This command will run a Tor relay server with a safe default configuration (not as an exit node). Note though that this container is using the host network, ie. all ports are published by default on the host running the container.
+
+The server will autostart after restarting the host system. All Tor data will be preserved in a Docker volume, even if you upgrade or remove the container. See below on how to backup the server identity.
 
 Check with `docker logs -f tor-node`  If you see the message: `[notice] Self-testing indicates your ORPort is reachable from the outside. Excellent. Publishing server descriptor.` at the bottom after a while, your server started successfully. Then wait a bit longer and search for your server on the [Relay Search](https://metrics.torproject.org/rs.html).
 
@@ -60,7 +60,7 @@ SocksPort 0
 ControlSocket 0
 ```
 
-#### Run Tor with a custom configuration
+#### Run Tor with a mounted `torrc` configuration
 
 To modify your Tor configuration, create another folder containing your configs and create a `*.conf` file, e.g.
 
@@ -71,11 +71,9 @@ nano tor-config/mynode.conf
 
 Then mount your customized Tor config from the current directory of the host into the container with this command:
 ```
-mkdir -vp tor-data && \
 docker run -d --init --name=tor-node --net=host --restart=always \
   -v $PWD/tor-config:/etc/torrc.d:ro \
-  -v $PWD/tor-data:/var/lib/tor \
-  -p 9001:9001 -p 9030:9030 \
+  -v tor-data:/var/lib/tor \
   else/tor-node
 ```
 
@@ -142,7 +140,7 @@ The sample Tor relay server configurations use `network_mode: host` which makes 
 ```
 nano tor-config/mynode.conf
 # should contain
-# ORPort [IPv6-address]:9001
+# ORPort [IPv6-address]:9001`
 ```
 
 - Restart the container and test, that the Tor relay can reach the outside world:
