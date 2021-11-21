@@ -4,6 +4,11 @@
 #### A complete, efficient and secure Tor relay server Docker image
 *This Docker image will run the latest version of Tor server available on Arch Linux. It will run Tor as an unprivileged regular user, as recommended by torproject.org.*
 
+| Registry | Image Name |
+|----------|------------|
+| Docker Hub | else/tor-node |
+| Container Registry | elsbrock/tor-node |
+
 The image is distroless, meaning that it is missing a userland (using `FROM scratch`). This minimizes the attack surface and keeps the image extremely small. It also helps to keep the software updated. Whenever a new release of `tor` is published in Arch Linux, it will be automatically picked up.
 
 Tor and its dependencies are kept up to date with the help of [Renovate](https://docs.renovatebot.com). PRs to update dependencies that pass the build are merged automatically and a new Docker image version is published subsequently.
