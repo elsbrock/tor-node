@@ -1,17 +1,17 @@
-FROM golang AS go-build
+FROM golang@sha256:4f0671cf24397b6f98013bfc47882d4299573639c3714825297ddbd4b621ee92 AS go-build
 
 ENV GOARCH=amd64
 RUN go install -ldflags="-extldflags=-static" -v gitlab.com/yawning/obfs4.git/obfs4proxy@latest \
  && cp -v /go/bin/* /usr/local/bin
 
-FROM amd64/archlinux AS install-tor
+FROM amd64/archlinux@sha256:52b9c822cfc959544541ef8cc4a3359aff6bc89984ddfa6555bf952267ef3cff AS install-tor
 RUN pacman --noconfirm -Sy tor
 
 RUN ldd /usr/bin/tor | tr -s '[:blank:]' '\n' | grep '^/' | \
     xargs -I % sh -xc 'mkdir -p $(dirname deps%); cp -L % deps%;'
 
 # busybox is needed to chown directory
-FROM busybox AS stage
+FROM busybox@sha256:e7157b6d7ebbe2cce5eaa8cfe8aa4fa82d173999b9f90a9ec42e57323546c353 AS stage
 
 COPY --from=go-build /usr/local/bin/ /usr/bin/
 
