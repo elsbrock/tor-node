@@ -13,6 +13,8 @@ The image is distroless, meaning that it is missing a userland (using `FROM scra
 
 Tor and its dependencies are kept up to date with the help of [Renovate](https://docs.renovatebot.com). PRs to update dependencies that pass the build are merged automatically and a new Docker image version is published subsequently.
 
+> Releases are currently not automated, ie. the `:latest` tag is not updated automatically – if you want to follow `master`, use `:master`. Note that `:master` will be updated at least once per week, whereas `:latest` will only be updated every once in a while until automation is in place.
+
 The Docker image can be automatically updated on the Docker host using [Watchtower](http://containrrr.dev/watchtower/).
 
 #### About Tor
