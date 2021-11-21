@@ -22,7 +22,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@5220b231121b5b69d5effbe0d0e4770a68500a44
         with:
           images: else/tor-node
 
