@@ -60,7 +60,7 @@ SocksPort 0
 ControlSocket 0
 ```
 
-#### Run Tor with a mounted `torrc` configuration
+#### Run Tor with a custom configuration
 
 To modify your Tor configuration, create another folder containing your configs and create a `*.conf` file, e.g.
 
