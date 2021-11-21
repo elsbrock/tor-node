@@ -7,11 +7,19 @@ RUN go install -ldflags="-extldflags=-static" -v gitlab.com/yawning/obfs4.git/ob
 FROM amd64/archlinux AS install-tor
 RUN pacman --noconfirm -Sy tor
 
+RUN sed -i 's/#%include/%include/' /etc/tor/torrc && \
+    sed -i 's/Log notice syslog/#Log notice syslog/' /etc/tor/torrc && \
+    sed -i 's/#ORPort 9001/ORPort 9001/' /etc/tor/torrc && \
+    sed -i 's/#DirPort 9030/DirPort 9030/' /etc/tor/torrc && \
+    sed -i 's/#ExitPolicy reject \\*:\\*/ExitPolicy reject *:*/' /etc/tor/torrc
+
+RUN mkdir /etc/torrc.d
+
 RUN ldd /usr/bin/tor | tr -s '[:blank:]' '\n' | grep '^/' | \
     xargs -I % sh -xc 'mkdir -p $(dirname deps%); cp -L % deps%;'
 
-# busybox is needed to chown directory
-FROM busybox AS stage
+# busybox is needed to chown directory, sed config
+FROM scratch AS stage
 
 COPY --from=go-build /usr/local/bin/ /usr/bin/
 
@@ -27,9 +35,7 @@ COPY --from=install-tor /etc/nsswitch.conf /etc/nsswitch.conf
 COPY --from=install-tor /usr/bin/tor /usr/bin/
 COPY --from=install-tor /deps /
 COPY --from=install-tor /etc/tor/torrc /etc/tor/torrc
-COPY --from=install-tor /var/lib/tor /var/lib/tor
-
-RUN chown tor:tor /var/lib/tor && chmod 0700 /var/lib/tor
+COPY --from=install-tor --chown=tor:tor /var/lib/tor /var/lib/tor
 
 COPY ./scripts/ /usr/local/bin/
 
