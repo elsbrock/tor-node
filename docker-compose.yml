@@ -1,4 +1,4 @@
-version: '2.2'
+version: '3'
 services:
   relay:
     image: else/tor-node
@@ -6,4 +6,11 @@ services:
     restart: always
     network_mode: host
     volumes:
-      - ./tor-data/:/var/lib/tor/
+      - tor-data:/var/lib/tor
+      - tor-config:/etc/torrc.d
+  watchtower:
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 60
