@@ -12,15 +12,17 @@ FROM amd64/archlinux AS tor
 RUN pacman --noconfirm -Sy tor
 
 RUN ldd /usr/bin/tor | tr -s '[:blank:]' '\n' | grep '^/' | \
-    xargs -I % sh -xc 'mkdir -p $(dirname deps%); cp % deps%;'
+    xargs -I % sh -xc 'mkdir -p $(dirname deps%); cp -L % deps%;'
 
 FROM scratch AS stage
 
 COPY --from=go-build /usr/local/bin/ /usr/bin/
 
 COPY --from=tor /etc/passwd /etc/passwd
-COPY --from=tor /usr/lib/libnss_dns.so.2 /usr/lib
-COPY --from=tor /usr/lib/libresolv.so.2 /usr/lib
+COPY --from=tor \
+    /usr/lib/libnss_dns-2.33.so /usr/lib/libnss_dns.so.2 \
+    /usr/lib/libresolv-2.33.so /usr/lib/libresolv.so.2 \
+    /usr/lib/
 COPY --from=tor /etc/nsswitch.conf /etc/nsswitch.conf
 
 COPY --from=tor /usr/bin/tor /usr/bin/
