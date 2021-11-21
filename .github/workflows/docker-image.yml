@@ -43,6 +43,12 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Validate Tor
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ steps.meta.outputs.tags }}
+          run: --verify-config
+
       - name: Analyze Docker image
         uses: yuichielectric/dive-action@0.0.4
         with:
