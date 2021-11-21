@@ -28,7 +28,9 @@ jobs:
         id: meta
         uses: docker/metadata-action@5220b231121b5b69d5effbe0d0e4770a68500a44
         with:
-          images: else/tor-node
+          images: |
+            else/tor-node
+            ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -50,6 +52,14 @@ jobs:
         uses: yuichielectric/dive-action@0.0.4
         with:
           image: ${{ steps.meta.outputs.tags }}
+
+      - name: Login to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@1cce1654e01caa87cc0eac1c100e6749708affb9
