@@ -1,10 +1,7 @@
 FROM golang AS go-build
 
 ENV GOARCH=amd64
-
-# Build /go/bin/obfs4proxy & /go/bin/meek-server
 RUN go install -ldflags="-extldflags=-static" -v gitlab.com/yawning/obfs4.git/obfs4proxy@latest \
- && go install -ldflags="-extldflags=-static" -v git.torproject.org/pluggable-transports/meek.git/meek-server@latest \
  && cp -v /go/bin/* /usr/local/bin
 
 FROM amd64/archlinux AS install-tor
