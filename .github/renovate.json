@@ -11,7 +11,8 @@
     },
     "packageRules": [
         {
-          "automerge": true
+          "automerge": true,
+          "matchPaths": ["Dockerfile"]
         }
     ],
     "ignorePaths": ["docker-compose.yml"]
