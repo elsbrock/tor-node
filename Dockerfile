@@ -36,8 +36,6 @@ COPY --from=install-tor /deps /
 COPY --from=install-tor /etc/tor/torrc /etc/tor/torrc
 COPY --from=install-tor --chown=tor:tor /var/lib/tor /var/lib/tor
 
-COPY ./scripts/ /usr/local/bin/
-
 FROM scratch
 
 COPY --from=stage / /
