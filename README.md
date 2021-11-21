@@ -142,7 +142,7 @@ The sample Tor relay server configurations use `network_mode: host` which makes 
 ```
 nano tor-config/mynode.conf
 # should contain
-# ORPort [IPv6-address]:9001`
+# ORPort [IPv6-address]:9001
 ```
 
 - Restart the container and test, that the Tor relay can reach the outside world:
