@@ -1,4 +1,3 @@
-# Dockerfile for Tor Relay Server with obfs4proxy (Multi-Stage build)
 FROM golang AS go-build
 
 ENV GOARCH=amd64
@@ -23,9 +22,8 @@ COPY --from=install-tor /etc/passwd /etc/group /etc/
 COPY --from=install-tor \
     /usr/lib/libnss_files-2.33.so /usr/lib/libnss_files.so /usr/lib/libnss_files.so.2 \
     /usr/lib/libnss_compat-2.33.so /usr/lib/libnss_compat.so /usr/lib/libnss_compat.so.2 \
-    /usr/lib/libresolv-2.33.so /usr/lib/libresolv.so.2 \
-    /usr/lib/libnss_dns-2.33.so /usr/lib/libnss_dns.so.2 \
-    /usr/lib/libresolv-2.33.so /usr/lib/libresolv.so.2 \
+    /usr/lib/libresolv-2.33.so /usr/lib/libresolv.so /usr/lib/libresolv.so.2 \
+    /usr/lib/libnss_dns-2.33.so /usr/lib/libnss_dns.so /usr/lib/libnss_dns.so.2 \
     /usr/lib/
 COPY --from=install-tor /etc/nsswitch.conf /etc/nsswitch.conf
 
@@ -42,7 +40,7 @@ FROM scratch
 
 COPY --from=stage / /
 
-VOLUME /etc/tor /var/lib/tor
+VOLUME /etc/tor /etc/torrc.d /var/lib/tor
 EXPOSE 9001 9030 9050 54444 7002
 
 ENTRYPOINT ["/usr/bin/tor"]
