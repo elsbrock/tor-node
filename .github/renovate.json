@@ -13,5 +13,6 @@
         {
           "automerge": true
         }
-    ]
+    ],
+    "ignorePaths": ["docker-compose.yml"]
 }
