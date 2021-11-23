@@ -67,7 +67,7 @@ SocksPort 0
 ControlSocket 0
 ```
 
-#### Run Tor with a mounted `torrc` configuration
+#### Run Tor with a custom configuration
 
 To modify your Tor configuration, create another folder containing your configs and create a `*.conf` file, e.g.
 
@@ -147,7 +147,7 @@ The sample Tor relay server configurations use `network_mode: host` which makes 
 ```
 nano tor-config/mynode.conf
 # should contain
-# ORPort [IPv6-address]:9001`
+# ORPort [IPv6-address]:9001
 ```
 
 - Restart the container and test, that the Tor relay can reach the outside world:
