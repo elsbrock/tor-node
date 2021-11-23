@@ -45,6 +45,11 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ steps.meta.outputs.tags }}
+        run: echo "$JOB_CONTEXT"
+
       - name: Validate Tor
         run: docker run --rm ${{ fromJSON(steps.meta.outputs.tags)[0] }} --verify-config
 
