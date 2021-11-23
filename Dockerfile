@@ -40,7 +40,7 @@ FROM scratch
 
 COPY --from=stage / /
 
-VOLUME /etc/tor /etc/torrc.d /var/lib/tor
+VOLUME /etc/torrc.d /var/lib/tor
 EXPOSE 9001 9030
 
 ENTRYPOINT ["/usr/bin/tor"]
