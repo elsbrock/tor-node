@@ -46,12 +46,12 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Validate Tor
-        run: docker run --rm ${{ fromJSON(steps.meta.outputs.json)[0] }} --verify-config
+        run: docker run --rm ${{ steps.meta.outputs.json[0] }} --verify-config
 
       - name: Analyze Docker image
         uses: yuichielectric/dive-action@0.0.4
         with:
-          image: ${{ fromJSON(steps.meta.outputs.json)[0] }}
+          image: ${{ steps.meta.outputs.json[0] }}
 
       - name: Login to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
