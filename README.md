@@ -37,7 +37,7 @@ state security.
 - Prerequisites: A Linux server with Docker installed (see [Install Docker and Docker Compose](#install-docker-and-docker-compose) below)
 - Public access to the configured ports
 
-Create a directory for your Tor server data and your custom configuration. Then set your own Nickname (only letters and numbers) and an optional contact Email (which will be published on the Tor network):
+To start the Tor node with the default configuration, run the following command:
 
 ```sh
 docker run -d --init --name=tor-node --net=host --restart=always \
@@ -52,11 +52,11 @@ The server will autostart after restarting the host system. All Tor data will be
 Check with `docker logs -f tor-node`  If you see the message: `[notice] Self-testing indicates your ORPort is reachable from the outside. Excellent. Publishing server descriptor.` at the bottom after a while, your server started successfully. Then wait a bit longer and search for your server on the [Relay Search](https://metrics.torproject.org/rs.html).
 
 ### Customize Tor configuration
-You may want to configure additional options to control your monthly data usage, or to run Tor as a hidden obfuscated bridge. Look at the Tor manual with all [Configuration File Options](https://www.torproject.org/docs/tor-manual.html.en).
+It is recommended to provide an email address at which the node operator can be reached. You may also want to configure additional options to control your monthly data usage, or to run Tor as a hidden obfuscated bridge. Look at the Tor manual with all [Configuration File Options](https://2019.www.torproject.org/docs/tor-manual.html.en). This requires the configuration to be customized.
 
-For customisation you can create `*.conf` files in the `tor-config` volume containing valid Tor configuration directives. These directives are included from the main config located in `/etc/tor/torrc` which is is baked into the image.
+For customization you can create `*.conf` files in the `tor-config` volume containing valid Tor configuration directives. These directives are included from the main config located in `/etc/tor/torrc` which is is baked into the image.
 
-*Example*
+**Example**
 
 ```
 Nickname ieditedtheconfig
