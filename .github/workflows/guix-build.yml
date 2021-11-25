@@ -1,0 +1,26 @@
+name: test
+on: [push]
+jobs:
+  build:
+    name: Test Guix installation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Guix cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/guix
+          key: guix-cache-${{ github.sha }}
+          restore-keys: |
+            guix-cache-
+      - name: Install Guix
+        uses: PromyLOPh/guix-install-action@v1
+      - name: Ensure no locale warning
+        run: test -z "$(guix --version 2>&1 >/dev/null)"
+      - name: Build tor
+        run: guix build tor
+      - name: Pack (Relocatable Binary)
+        run: guix pack --relocatable --save-provenance --root=tor.tar.bz2 --compression=bzip2 tor
+      - name: Pack (Docker)
+        run: guix pack --save-provenance --format=docker --entry-point=bin/tor --root=tor.tar.gz tor
+      - name: Debug
+        run: ls -lha
