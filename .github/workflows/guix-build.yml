@@ -22,7 +22,10 @@ jobs:
         run: guix pack --save-provenance --format=docker --entry-point=bin/tor --root=tor.tar.gz tor
       - name: Debug
         run: ls -lhaL tor.tar.gz
-      - run: sha256sum -lhaL tor.tar.gz
-        continue-on-error: true 
+      - name: list files
+        run: tar -tvf tor.tar.gz
+      - name: SHA256
+        run: sha256sum tor.tar.gz
       - run: docker import tor.tar.gz tor
-      - run: docker images
+      - name: Docker Images
+        run: docker images
