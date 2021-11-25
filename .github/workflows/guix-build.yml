@@ -21,4 +21,4 @@ jobs:
       - name: Pack (Docker)
         run: guix pack --save-provenance --format=docker --entry-point=bin/tor --root=tor.tar.gz tor
       - name: Debug
-        run: ls -lha /gnu/store
+        run: ls -lhaL tor.tar.gz
