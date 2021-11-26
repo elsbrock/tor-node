@@ -7,7 +7,7 @@
 | Registry | Image Name |
 |----------|------------|
 | Docker Hub | else/tor-node |
-| Container Registry | elsbrock/tor-node |
+| Container Registry | ghcr.io/elsbrock/tor-node:master |
 
 The image is distroless, meaning that it is missing a userland (using `FROM scratch`). This minimizes the attack surface and keeps the image extremely small. It also helps to keep the software updated. Whenever a new release of `tor` is published in Arch Linux, it will be automatically picked up.
 
