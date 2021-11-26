@@ -19,7 +19,7 @@ jobs:
       - name: Build tor
         run: guix build tor
       - name: Pack (Docker)
-        run: guix pack --save-provenance --format=docker --entry-point=bin/tor --root=tor.tar.gz tor
+        run: guix pack --format=docker --entry-point=bin/tor --root=tor.tar.gz tor
       - name: Debug
         run: ls -lhaL tor.tar.gz
       - name: list files
