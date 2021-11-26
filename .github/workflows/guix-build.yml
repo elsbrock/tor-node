@@ -29,9 +29,7 @@ jobs:
       - run: docker import tor.tar.gz tor
       - name: Docker Images
         run: docker images
+      - name: Tag Docker image
+        run: docker tag tor "ghcr.io/elsbrock/tor-node:guix"
       - name: Push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: "ghcr.io/elsbrock/tor-node:guix"
+        run: docker push "ghcr.io/elsbrock/tor-node:guix"
