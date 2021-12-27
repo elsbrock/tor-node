@@ -4,7 +4,7 @@ ENV GOARCH=amd64
 RUN go install -ldflags="-extldflags=-static" -v gitlab.com/yawning/obfs4.git/obfs4proxy@latest \
  && cp -v /go/bin/* /usr/local/bin
 
-FROM amd64/archlinux@sha256:d0d8ac0c5f3ff1cd9f67e728fd46616c3bb43c5dc4f923e5de7250ec24579180 AS install-tor
+FROM amd64/archlinux@sha256:e23cbe0e130464522d4be2367fb8d9484d8b2d2dfac23c78d575f1ae6c4600c8 AS install-tor
 RUN pacman --noconfirm -Sy tor
 
 RUN sed -i 's/#%include/%include/' /etc/tor/torrc && \
