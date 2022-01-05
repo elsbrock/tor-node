@@ -45,4 +45,7 @@ jobs:
           entrypoint: bin/tor
 
       - name: check if image is there
+        run: docker image ls
+      
+      - name: check if image is there
         run: docker run --rm -t tor:latest --version
