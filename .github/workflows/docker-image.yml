@@ -43,3 +43,6 @@ jobs:
         with:
           package-name: tor
           entrypoint: bin/tor
+
+      - name: check if image is there
+        run: docker run --rm -t tor:latest --version
