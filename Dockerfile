@@ -1,4 +1,4 @@
-FROM golang@sha256:c7c94588b6445f5254fbc34df941afa10de04706deb330e62831740c9f0f2030 AS go-build
+FROM golang@sha256:0906175f651d65550ab51876c06083868e17c8da5f76b46215016f4e5b5eaeff AS go-build
 
 ENV GOARCH=amd64
 RUN go install -ldflags="-extldflags=-static" -v gitlab.com/yawning/obfs4.git/obfs4proxy@latest \
